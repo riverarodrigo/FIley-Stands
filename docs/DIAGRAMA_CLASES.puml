@@ -1,0 +1,25 @@
+@startuml
+skinparam classAttributeIconSize 0
+package "datos" {
+  enum EstadoStand { DISPONIBLE; RESERVADO; OCUPADO; BLOQUEADO }
+  class Stand { - id : int; - metrosCuadrados : double; - precioPorMetro : double; - estado : EstadoStand; + getPrecioTotal() : double }
+  class Editorial { - id : int; - nombre : String }
+  class Reserva { - editorial : Editorial; - stand : Stand; - fechaLimiteReserva : LocalDate; - montoPagado : double; + abonar(monto : double) }
+  class Configuracion { - fechaProntoPago : LocalDate; - fechaLimitePagoTotal : LocalDate; - fechaLimiteReserva : LocalDate; - diasAnticipacionAviso : int; - porcentajeMinimoOcupacion : double }
+}
+package "negocio" {
+  class GestorStands { + registrarStand(stand : Stand); + bloquear(id : int); + desbloquear(id : int); + reservar(id : int, editorial : Editorial, hoy : LocalDate) : Reserva; + registrarPago(id : int, monto : double, hoy : LocalDate); + revisarNotificaciones(hoy : LocalDate); + liberarReservasVencidas(hoy : LocalDate) }
+}
+package "notificaciones" {
+  interface Observador { + notificar(editorial : Editorial, mensaje : String) }
+  class NotificadorConsola
+}
+Stand --> EstadoStand
+Reserva --> Stand
+Reserva --> Editorial
+GestorStands --> Stand
+GestorStands --> Reserva
+GestorStands --> Configuracion
+GestorStands o--> Observador
+Observador <|.. NotificadorConsola
+@enduml

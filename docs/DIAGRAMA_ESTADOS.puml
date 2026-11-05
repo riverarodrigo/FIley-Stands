@@ -1,0 +1,8 @@
+@startuml
+[*] --> Disponible
+Disponible --> Reservado : reservar dentro del plazo
+Disponible --> Bloqueado : bloquear
+Bloqueado --> Disponible : desbloquear
+Reservado --> Ocupado : abono acumulado >= 15%
+Reservado --> Disponible : reserva vencida sin 15%
+@enduml
